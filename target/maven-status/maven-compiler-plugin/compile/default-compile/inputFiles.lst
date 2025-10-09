@@ -1,5 +1,10 @@
-C:\Users\Laura\OneDrive\Desktop\Documents\NetBeansProjects\Usuario-Cliente\src\main\java\com\example\demo\ClaseMain.java
-C:\Users\Laura\OneDrive\Desktop\Documents\NetBeansProjects\Usuario-Cliente\src\main\java\com\example\demo\Controladores\UsuarioController.java
-C:\Users\Laura\OneDrive\Desktop\Documents\NetBeansProjects\Usuario-Cliente\src\main\java\com\example\demo\Modelo\Usuario.java
-C:\Users\Laura\OneDrive\Desktop\Documents\NetBeansProjects\Usuario-Cliente\src\main\java\com\example\demo\Repositorio\UsuarioRepository.java
-C:\Users\Laura\OneDrive\Desktop\Documents\NetBeansProjects\Usuario-Cliente\src\main\java\com\example\demo\Service\UsuarioService.java
+C:\Users\Laura\OneDrive\Desktop\Documents\NetBeansProjects\Backend\src\main\java\com\example\demo\ClaseMain.java
+C:\Users\Laura\OneDrive\Desktop\Documents\NetBeansProjects\Backend\src\main\java\com\example\demo\Controladores\pedidoController.java
+C:\Users\Laura\OneDrive\Desktop\Documents\NetBeansProjects\Backend\src\main\java\com\example\demo\Controladores\UsuarioController.java
+C:\Users\Laura\OneDrive\Desktop\Documents\NetBeansProjects\Backend\src\main\java\com\example\demo\Modelo\ItemsPedidos.java
+C:\Users\Laura\OneDrive\Desktop\Documents\NetBeansProjects\Backend\src\main\java\com\example\demo\Modelo\Pedido.java
+C:\Users\Laura\OneDrive\Desktop\Documents\NetBeansProjects\Backend\src\main\java\com\example\demo\Modelo\Usuario.java
+C:\Users\Laura\OneDrive\Desktop\Documents\NetBeansProjects\Backend\src\main\java\com\example\demo\Repositorio\PedidoRepository.java
+C:\Users\Laura\OneDrive\Desktop\Documents\NetBeansProjects\Backend\src\main\java\com\example\demo\Repositorio\UsuarioRepository.java
+C:\Users\Laura\OneDrive\Desktop\Documents\NetBeansProjects\Backend\src\main\java\com\example\demo\Service\PedidoService.java
+C:\Users\Laura\OneDrive\Desktop\Documents\NetBeansProjects\Backend\src\main\java\com\example\demo\Service\UsuarioService.java

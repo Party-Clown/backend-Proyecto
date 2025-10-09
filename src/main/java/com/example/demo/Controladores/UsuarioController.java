@@ -6,7 +6,11 @@ package com.example.demo.Controladores;
 
 import com.example.demo.Modelo.Usuario;
 import com.example.demo.Service.UsuarioService;
+import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
+import java.util.Optional;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -27,22 +31,27 @@ import org.springframework.web.bind.annotation.RestController;
  * @author Laura
  */
 @RestController
-@RequestMapping("/api/usuarios")
+@RequestMapping("/api/usuario")
 public class UsuarioController {
     private final UsuarioService usuarioService;
+   
     
     @Autowired
     public UsuarioController(UsuarioService usuarioService){
         this.usuarioService=usuarioService;
+    }
+    public static class LoginRequest {
+        public String email;
+        public String password;
     }
    @GetMapping
    public ResponseEntity<List<Usuario>> getAllUsuarios(){
        List<Usuario> usuarios=usuarioService.findAll();
        return new ResponseEntity<>(usuarios, HttpStatus.OK);
    }
-   @GetMapping("/{email}")
-    public ResponseEntity<Usuario> getUsuarioById(@PathVariable String email) {
-        Usuario usuario = usuarioService.findByEmail(email);
+   @GetMapping("/{id}")
+    public ResponseEntity<Usuario> getUsuarioById(@PathVariable int id) {
+        Usuario usuario = usuarioService.findById(id);
         if (usuario != null) {
             return new ResponseEntity<>(usuario, HttpStatus.OK);
         } else {
@@ -56,11 +65,11 @@ public class UsuarioController {
         return new ResponseEntity<>(newUsuario, HttpStatus.CREATED);
     }
 
-    @PutMapping("/{email}")
-    public ResponseEntity<Usuario> update(@PathVariable String email, @RequestBody Usuario usuario) {
-        Usuario existingUsuario = usuarioService.findByEmail(email);
+    @PutMapping("/{id}")
+    public ResponseEntity<Usuario> update(@PathVariable int id, @RequestBody Usuario usuario) {
+        Usuario existingUsuario = usuarioService.findById(id);
         if (existingUsuario != null) {
-            usuario.setcorreoElectronico(email);
+            usuario.setId(id);
             Usuario updatedUsuario = usuarioService.update(usuario);
             return new ResponseEntity<>(updatedUsuario, HttpStatus.OK);
         } else {
@@ -68,11 +77,11 @@ public class UsuarioController {
         }
     }
 
-    @DeleteMapping("/{email}")
-    public ResponseEntity<Void> deleteUsuario(@PathVariable String email) {
-        Usuario existingUsuario = usuarioService.findByEmail(email);
+    @DeleteMapping("/{id}")
+    public ResponseEntity<Void> deleteUsuario(@PathVariable int id) {
+        Usuario existingUsuario = usuarioService.findById(id);
         if (existingUsuario != null) {
-            usuarioService.deleteByEmail(email);
+            usuarioService.deleteByEmail(id);
             return new ResponseEntity<>(HttpStatus.NO_CONTENT);
         } else {
             return new ResponseEntity<>(HttpStatus.NOT_FOUND);
@@ -80,11 +89,34 @@ public class UsuarioController {
     }
 
     @GetMapping("/buscar")
-    public ResponseEntity<List<Usuario>> buscarUsuarios(@RequestParam String nombre,
-            @RequestParam(required = false) String email, @RequestParam int edad) {
-        List<Usuario> usuarios = usuarioService.buscarPorFiltros(nombre, email);
+    public ResponseEntity<List<Usuario>> buscarUsuarios(
+     
+     @RequestParam(required = false) String nombre,
+     @RequestParam(required = false) Integer id
+    ) {
+
+        List<Usuario> usuarios = usuarioService.buscarPorFiltros(nombre,id);
         return new ResponseEntity<>(usuarios, HttpStatus.OK);
     }
-
-    
+  @PostMapping("/login")
+public ResponseEntity<?> login(@RequestBody LoginRequest req) {
+if (req == null || req.email == null || req.password == null) {
+return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("Faltan credenciales");
 }
+
+
+Optional<Usuario> opt = usuarioService.login(req.email, req.password);
+if (opt.isPresent()) {
+Usuario u = opt.get();
+Map<String, Object> resp = new HashMap<>();
+resp.put("message", "OK");
+resp.put("role", u.getRol());
+resp.put("email", u.getCorreoElectronico());
+resp.put("id", u.getId());
+return ResponseEntity.ok(resp);
+}
+return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("Credenciales inválidas");
+}
+}
+
+

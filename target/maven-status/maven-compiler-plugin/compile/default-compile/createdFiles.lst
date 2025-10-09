@@ -1,5 +1,11 @@
-com\example\demo\ClaseMain.class
 com\example\demo\Controladores\UsuarioController.class
+com\example\demo\Modelo\ItemsPedidos.class
+com\example\demo\ClaseMain.class
+com\example\demo\Controladores\pedidoController.class
 com\example\demo\Repositorio\UsuarioRepository.class
+com\example\demo\Repositorio\PedidoRepository.class
+com\example\demo\Controladores\UsuarioController$LoginRequest.class
+com\example\demo\Modelo\Pedido.class
 com\example\demo\Modelo\Usuario.class
+com\example\demo\Service\PedidoService.class
 com\example\demo\Service\UsuarioService.class
