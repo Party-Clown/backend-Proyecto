@@ -15,6 +15,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.UUID;
 import org.springframework.stereotype.Repository;
+import java.util.stream.BaseStream;
 
 /**
  *
@@ -23,11 +24,33 @@ import org.springframework.stereotype.Repository;
 @Repository
 public class PedidoRepository {
    private final List<Pedido> baseDeDatos=new ArrayList<>();
-   
-   public Pedido save(Pedido pedido){
-        baseDeDatos.add(pedido);
-        return pedido;
-    }
+ 
+     
+     public Pedido save(Pedido pedido) {
+        String correo = pedido.getCorreoUsuario();
+
+        if(correo==null|| correo.isEmpty()){
+            correo="anonimo";
+        }
+        int contador=0;
+        for(Pedido p:baseDeDatos){
+            if(p.getCorreoUsuario()!=null && p.getCorreoUsuario().equalsIgnoreCase(correo));
+            contador++;
+        }
+      int nuevoNumero=contador +1;
+      pedido.setId(nuevoNumero);
+      pedido.setCorreoUsuario(correo);
+      if(pedido.getNombreUsuario()==null || pedido.getNombreUsuario().isEmpty()){
+          pedido.setNombreUsuario(correo);
+      }
+      baseDeDatos.add(pedido);
+      System.out.print("pedido guardado");
+      return pedido;
+        
+       }
+     
+     
+
    public List<Pedido> findAll(){
        return new ArrayList<>(baseDeDatos);
    }
@@ -48,4 +71,36 @@ public class PedidoRepository {
         }
         
     }
+   public boolean actualizarEstadoPedido(int id, String nuevoEstado) {
+        Pedido pedido = findById(id);
+        if (pedido != null) {
+            pedido.setEstado(nuevoEstado);
+
+            // Si el pedido tiene items, también se actualizan
+            if (pedido.getItems() != null) {
+                pedido.getItems().forEach(item -> item.setEstado(nuevoEstado));
+            }
+
+            System.out.println("✅ Pedido " + id + " actualizado a estado: " + nuevoEstado);
+            return true;
+        }
+        return false;
+    }
+
+    // 🔹 Marcar un pedido como "Terminado"
+    public boolean terminarPedido(int id) {
+        Pedido pedido = findById(id);
+        if (pedido != null) {
+            pedido.setEstado("Terminado");
+
+            if (pedido.getItems() != null) {
+                pedido.getItems().forEach(item -> item.setEstado("Terminado"));
+            }
+
+            System.out.println("✅ Pedido " + id + " marcado como TERMINADO");
+            return true;
+        }
+        return false;
+    }
+   
 }

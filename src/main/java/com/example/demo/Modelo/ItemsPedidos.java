@@ -4,18 +4,39 @@
  */
 package com.example.demo.Modelo;
 
+import jakarta.persistence.Column;
+import jakarta.persistence.Entity;
+import jakarta.persistence.GeneratedValue;
+import jakarta.persistence.GenerationType;
+import jakarta.persistence.Id;
+import jakarta.persistence.JoinColumn;
+import jakarta.persistence.ManyToOne;
+import jakarta.persistence.Table;
 import java.io.Serializable;
 
 /**
  *
  * @author Laura
  */
+@Entity
+@Table(name="Pedidos")
 public class ItemsPedidos implements Serializable {
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    private Integer id;
+    @Column(nullable=false)
     private String categoria;
+    @Column(nullable=false)
     private String nombre;
-    private int cantidad;
+    @Column(nullable = false)
+    private Integer cantidad;
+    @Column(nullable = false)
     private double precioUnitario;
-    private String usuario;
+    @Column(nullable = false)
+    private String Estado="EN PROCESO";
+    @ManyToOne
+    @JoinColumn(name="usuario_id")
+    private Usuario usuario;
             
     public ItemsPedidos(){
         
@@ -26,6 +47,7 @@ public class ItemsPedidos implements Serializable {
         this.nombre = nombre;
         this.cantidad = cantidad;
         this.precioUnitario = precioUnitario;
+        this.Estado=Estado;
     }
    
 
@@ -37,11 +59,19 @@ public class ItemsPedidos implements Serializable {
         this.usuario=usuario;
     }
 
-    public String getUsuario() {
+    public String getEstado() {
+        return Estado;
+    }
+
+    public void setEstado(String Estado) {
+        this.Estado = Estado;
+    }
+
+    public Usuario getUsuario() {
         return usuario;
     }
 
-    public void setUsuario(String usuario) {
+    public void setUsuario(Usuario usuario) {
         this.usuario = usuario;
     }
     
