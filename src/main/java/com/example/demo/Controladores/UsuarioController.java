@@ -41,8 +41,8 @@ public class UsuarioController {
         this.usuarioService=usuarioService;
     }
     public static class LoginRequest {
-        public String email;
-        public String password;
+        public String correoElectronico;
+        public String contrasena;
     }
    @GetMapping
    public ResponseEntity<List<Usuario>> getAllUsuarios(){
@@ -51,43 +51,38 @@ public class UsuarioController {
    }
    @GetMapping("/{id}")
     public ResponseEntity<Usuario> getUsuarioById(@PathVariable int id) {
-        Usuario usuario = usuarioService.findById(id);
-        if (usuario != null) {
-            return new ResponseEntity<>(usuario, HttpStatus.OK);
-        } else {
-            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
-        }
+      return usuarioService.findById(id)
+              .map(usuario -> new ResponseEntity<>(usuario, HttpStatus.OK))
+              .orElse(new ResponseEntity<>(HttpStatus.NOT_FOUND));
     }
 
     @PostMapping
     public ResponseEntity<Usuario> createUsuario(@RequestBody Usuario usuario) {
         Usuario newUsuario = usuarioService.guardar(usuario);
         return new ResponseEntity<>(newUsuario, HttpStatus.CREATED);
-    }
+       }
 
     @PutMapping("/{id}")
     public ResponseEntity<Usuario> update(@PathVariable int id, @RequestBody Usuario usuario) {
-        Usuario existingUsuario = usuarioService.findById(id);
-        if (existingUsuario != null) {
-            usuario.setId(id);
-            Usuario updatedUsuario = usuarioService.update(usuario);
-            return new ResponseEntity<>(updatedUsuario, HttpStatus.OK);
-        } else {
-            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
-        }
+         return usuarioService.findById(id)
+                .map(existingUsuario -> {
+                    usuario.setId(id);
+                    Usuario updatedUsuario = usuarioService.guardar(usuario); // save() también actualiza
+                    return new ResponseEntity<>(updatedUsuario, HttpStatus.OK);
+                })
+                .orElse(new ResponseEntity<>(HttpStatus.NOT_FOUND));
     }
 
     @DeleteMapping("/{id}")
     public ResponseEntity<Void> deleteUsuario(@PathVariable int id) {
-        Usuario existingUsuario = usuarioService.findById(id);
-        if (existingUsuario != null) {
-            usuarioService.deleteByEmail(id);
-            return new ResponseEntity<>(HttpStatus.NO_CONTENT);
-        } else {
-            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
-        }
+       return usuarioService.findById(id)
+                .map(existingUsuario -> {
+                    usuarioService.deleteById(id);
+                    return new ResponseEntity<Void>(HttpStatus.NO_CONTENT);
+                })
+                .orElse(new ResponseEntity<>(HttpStatus.NOT_FOUND));
     }
-
+    
     @GetMapping("/buscar")
     public ResponseEntity<List<Usuario>> buscarUsuarios(
      
@@ -100,12 +95,12 @@ public class UsuarioController {
     }
   @PostMapping("/login")
 public ResponseEntity<?> login(@RequestBody LoginRequest req) {
-if (req == null || req.email == null || req.password == null) {
+if (req == null || req.correoElectronico == null || req.contrasena == null) {
 return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("Faltan credenciales");
 }
 
 
-Optional<Usuario> opt = usuarioService.login(req.email, req.password);
+Optional<Usuario> opt = usuarioService.login(req.correoElectronico, req.contrasena);
 if (opt.isPresent()) {
 Usuario u = opt.get();
 Map<String, Object> resp = new HashMap<>();

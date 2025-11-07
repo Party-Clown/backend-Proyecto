@@ -4,7 +4,9 @@
  */
 package com.example.demo.Service;
 
+import com.example.demo.Modelo.ItemsPedidos;
 import com.example.demo.Modelo.Pedido;
+import com.example.demo.Modelo.PedidoTerminado;
 import com.example.demo.Repositorio.PedidoRepository;
 import java.util.List;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -34,5 +36,10 @@ public class PedidoService {
       public void deleteById(int id){
          pedidoR.deleteById(id);
      }
-      
+    public boolean actualizarEstadoPedido(int id, String nuevoEstado) {
+        return pedidoR.actualizarEstadoPedido(id, nuevoEstado);
+    }
+    public boolean terminarPedido(int id) {
+        return pedidoR.terminarPedido(id);
+    }
 }

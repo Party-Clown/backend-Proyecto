@@ -6,6 +6,8 @@ package com.example.demo.Service;
 
 import com.example.demo.Modelo.Usuario;
 import com.example.demo.Repositorio.UsuarioRepository;
+import com.example.demo.Repositorio.UsuariosRepository;
+
 import java.util.List;
 import java.util.Optional;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -18,45 +20,58 @@ import org.springframework.web.bind.annotation.RequestBody;
  */
 @Service
 public class UsuarioService {
-    private final UsuarioRepository usuarioRepository;
+	@Autowired
+        private UsuariosRepository usuarioRepository;
     
     private final String ADMIN_EMAIL = "admin@gmail.com";
     private final String ADMIN_PASSWORD = "Admin123";
 
-    @Autowired
-    public UsuarioService(UsuarioRepository usuarioRepository){
-        this.usuarioRepository=usuarioRepository;
-    }
+   
      public Usuario guardar(Usuario usuario){
-         return usuarioRepository.guardar(usuario);
+         return usuarioRepository.save(usuario);
      }
-     public Usuario findById(int id){
+     public Optional<Usuario> findById(int id){
          return usuarioRepository.findById(id);
      }
      public List<Usuario> findAll(){
          return usuarioRepository.findAll();
      }
-     public void deleteByEmail(int id){
+     public void deleteById(int id){
          usuarioRepository.deleteById(id);
      }
-     public Usuario update(Usuario usuario){
-         return usuarioRepository.update(usuario);
-     }
+    
       public List<Usuario> buscarPorFiltros(String nombre,Integer id) {
-          return usuarioRepository.buscarPorFiltros(nombre,id);
+    	  if (nombre != null && !nombre.isEmpty()) {
+              return usuarioRepository.findByNombreContainingIgnoreCase(nombre);
+          } else if (id != null) {
+              return usuarioRepository.findById(id)
+                      .map(List::of)
+                      .orElse(List.of());
+          } else {
+              return usuarioRepository.findAll();
+          }
       }
-     public Optional<Usuario> login(String email, String contrasena) {
-// primero comprobar admin fijo
-    if (ADMIN_EMAIL.equalsIgnoreCase(email) && ADMIN_PASSWORD.equals(contrasena)) {
-    Usuario admin = new Usuario(ADMIN_EMAIL,ADMIN_PASSWORD,"Administrador",0,"ADMIN");
-    return Optional.of(admin);
-}
-// sino comprobar en repositorio
-return usuarioRepository.validarCredenciales(email, contrasena);
-}
+      
+     public Optional<Usuario> login(String correoElectronico, String contrasena) {
+
+    	 if (ADMIN_EMAIL.equalsIgnoreCase(correoElectronico) && ADMIN_PASSWORD.equals(contrasena)) {
+             Usuario admin = new Usuario();
+             admin.setCorreoElectronico(correoElectronico);
+             admin.setContrasena(ADMIN_PASSWORD);
+             admin.setNombre("Administrador");
+             admin.setRol("ADMIN");
+             return Optional.of(admin);
+         }
+
+         // Si no, buscar en la base de datos
+         return usuarioRepository.findBycorreoElectronicoAndContrasena(correoElectronico, contrasena);
+     }
+     
+
+
    
-    public Optional<Usuario> findByEmail(String email) {
-return usuarioRepository.findByEmail(email);
+    public Optional<Usuario> findBycorreoElectronico(String correoElectronico) {
+    	return usuarioRepository.findBycorreoElectronico(correoElectronico);
 }
     
    
