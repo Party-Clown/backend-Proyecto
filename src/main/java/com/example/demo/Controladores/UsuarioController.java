@@ -5,7 +5,9 @@
 package com.example.demo.Controladores;
 
 import com.example.demo.Modelo.Usuario;
+import com.example.demo.dto.LoginRequestDTO;
 import com.example.demo.Service.UsuarioService;
+import com.example.demo.dto.LoginResponseDTO;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -15,6 +17,7 @@ import java.util.Optional;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.AuthenticationException;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -34,16 +37,14 @@ import org.springframework.web.bind.annotation.RestController;
 @RequestMapping("/api/usuario")
 public class UsuarioController {
     private final UsuarioService usuarioService;
-   
+  
     
     @Autowired
     public UsuarioController(UsuarioService usuarioService){
         this.usuarioService=usuarioService;
+       
     }
-    public static class LoginRequest {
-        public String correoElectronico;
-        public String contrasena;
-    }
+    
    @GetMapping
    public ResponseEntity<List<Usuario>> getAllUsuarios(){
        List<Usuario> usuarios=usuarioService.findAll();
@@ -83,35 +84,17 @@ public class UsuarioController {
                 .orElse(new ResponseEntity<>(HttpStatus.NOT_FOUND));
     }
     
-    @GetMapping("/buscar")
-    public ResponseEntity<List<Usuario>> buscarUsuarios(
-     
-     @RequestParam(required = false) String nombre,
-     @RequestParam(required = false) Integer id
-    ) {
-
-        List<Usuario> usuarios = usuarioService.buscarPorFiltros(nombre,id);
-        return new ResponseEntity<>(usuarios, HttpStatus.OK);
-    }
-  @PostMapping("/login")
-public ResponseEntity<?> login(@RequestBody LoginRequest req) {
-if (req == null || req.correoElectronico == null || req.contrasena == null) {
-return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("Faltan credenciales");
-}
-
-
-Optional<Usuario> opt = usuarioService.login(req.correoElectronico, req.contrasena);
-if (opt.isPresent()) {
-Usuario u = opt.get();
-Map<String, Object> resp = new HashMap<>();
-resp.put("message", "OK");
-resp.put("role", u.getRol());
-resp.put("email", u.getCorreoElectronico());
-resp.put("id", u.getId());
-return ResponseEntity.ok(resp);
-}
-return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("Credenciales inválidas");
-}
+   @PostMapping(value = "/login", produces = "application/json")
+   public ResponseEntity<?> login(@RequestBody LoginRequestDTO loginRequest){
+       try{
+           LoginResponseDTO response =usuarioService.login(loginRequest);
+           return ResponseEntity.ok(response);
+       }catch(AuthenticationException e){
+           return
+                   ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("Error: credenciales invalidas");
+       }
+   }
+  
 }
 
 

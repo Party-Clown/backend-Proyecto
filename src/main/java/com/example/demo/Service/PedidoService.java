@@ -6,7 +6,6 @@ package com.example.demo.Service;
 
 import com.example.demo.Modelo.ItemsPedidos;
 import com.example.demo.Modelo.Pedido;
-import com.example.demo.Modelo.PedidoTerminado;
 import com.example.demo.Repositorio.PedidoRepository;
 import java.util.List;
 import org.springframework.beans.factory.annotation.Autowired;
