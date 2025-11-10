@@ -3,7 +3,6 @@
  * Click nbfs://nbhost/SystemFileSystem/Templates/Classes/Class.java to edit this template
  */
 package com.example.demo.Modelo;
-
 import jakarta.persistence.Entity;
 import jakarta.persistence.Table;
 import com.fasterxml.jackson.annotation.JsonIgnore;
@@ -32,9 +31,9 @@ public class Usuario {
    private String correoElectronico; 
    @Column(nullable = false)
    private String nombre;
-   @Transient
+  @Column(nullable = false)
    private String rol;
-    @Column(nullable = false)
+   @Column(nullable = false)
    @JsonProperty(access = JsonProperty.Access.WRITE_ONLY)
    private String contrasena;
    @OneToMany(mappedBy = "usuario", fetch = FetchType.LAZY)
@@ -54,6 +53,30 @@ public class Usuario {
         
     }
 
+    public Integer getId() {
+        return id;
+    }
+
+    public void setId(Integer id) {
+        this.id = id;
+    }
+
+    public String getCorreoElectronico() {
+        return correoElectronico;
+    }
+
+    public void setCorreoElectronico(String correoElectronico) {
+        this.correoElectronico = correoElectronico;
+    }
+
+    public String getNombre() {
+        return nombre;
+    }
+
+    public void setNombre(String nombre) {
+        this.nombre = nombre;
+    }
+
     public String getRol() {
         return rol;
     }
@@ -61,26 +84,24 @@ public class Usuario {
     public void setRol(String rol) {
         this.rol = rol;
     }
+
+    public String getContrasena() {
+        return contrasena;
+    }
+
+    public void setContrasena(String contrasena) {
+        this.contrasena = contrasena;
+    }
+
+    public List<ItemsPedidos> getPedidos() {
+        return pedidos;
+    }
+
+    public void setPedidos(List<ItemsPedidos> pedidos) {
+        this.pedidos = pedidos;
+    }
+
     
-
-    public Integer getId() { return id; }
-    public void setId(Integer id) { this.id = id; }
-
-    public String getNombre() { return nombre; }
-    public void setNombre(String nombre) { this.nombre = nombre; }
-
-    public String getCorreoElectronico() { return correoElectronico; }
-    public void setCorreoElectronico(String correoElectronico) { this.correoElectronico = correoElectronico; }
-
-    public String getContrasena() { return contrasena; }
-    public void setContrasena(String contrasena) { this.contrasena = contrasena; }
-
-    public List<ItemsPedidos> getUsuarios() {
-    	return pedidos;
-    	}
-    public void setusuarios(List<ItemsPedidos> pedidos) {
-    	this.pedidos = pedidos; 
-    	}
 
 }
     
